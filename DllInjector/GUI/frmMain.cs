@@ -31,19 +31,25 @@ namespace DllInjector.GUI
         public frmMain()
         {
             InitializeComponent();
-            Injector.OnDllInjectEvent += new Injector.OnDllInjectDelegate(Injector_OnDllInject);
+            Injector.OnDllInjectEventHandler += new Injector.OnDllInjectDelegate(Injector_OnDllInject);
         }
 
-        OpenFileDialog fileDialog = new OpenFileDialog();
+        OpenFileDialog fileDialog = new OpenFileDialog()
+        {
+            Filter = "*.dll|*.dll"
+        };
         Process selectedProcess = null;
 
         void Injector_OnDllInject(object sender, DllInjectEventArgs e)
         {
-            string logMessage = string.Format("[{0}] {1}{2}",
-                DateTime.Now.ToLongTimeString(), e.StatusMessage, Environment.NewLine);
-            
-            this.rtxtbLog.AppendText(logMessage);
-            this.rtxtbLog.ScrollToCaret();
+            AddLogMessage(e.StatusMessage);
+        }
+
+        void AddLogMessage(string message)
+        {
+            message = string.Format("[{0}] {1}{2}", DateTime.Now.ToLongTimeString(), message, Environment.NewLine);
+            rtxtbLog.AppendText(message);
+            rtxtbLog.ScrollToCaret();
         }
 
         private void cboSystemProcesses_DropDown(object sender, EventArgs e)
@@ -52,10 +58,9 @@ namespace DllInjector.GUI
             Process[] processList = Process.GetProcesses();
             foreach (var p in processList)
             {
-                //string info = string.Format("{0} [{1}]", p.ProcessName, p.Id);
                 cboSystemProcesses.Items.Add(p.ProcessName);
-                cboSystemProcesses.Sorted = true;
             }
+            cboSystemProcesses.Sorted = true;
         }
 
         private void cboSystemProcesses_SelectedIndexChanged(object sender, EventArgs e)
@@ -73,10 +78,18 @@ namespace DllInjector.GUI
 
         private void btnInjectDll_Click(object sender, EventArgs e)
         {
-            if (selectedProcess != null && !string.IsNullOrEmpty(txtbDllPath.Text))
+            if (selectedProcess == null)
             {
-                Injector.InjectDll(selectedProcess, txtbDllPath.Text);
+                AddLogMessage("Process not found !");
+                return;
             }
+            if (String.IsNullOrEmpty(txtbDllPath.Text))
+            {
+                AddLogMessage("Dll not selected or invalid dll path.");
+                return;
+            }
+
+            Injector.InjectDll(selectedProcess, txtbDllPath.Text);   
         }
     }
 }

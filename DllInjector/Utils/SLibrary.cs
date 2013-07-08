@@ -28,7 +28,7 @@ namespace DllInjector.Utils
         /// Loads the specified module into the address space of the calling process.
         /// </summary>
         /// <param name="filename">The name of the module.</param>
-        /// <returns>Returns handle to the</returns>
+        /// <returns>Returns handle to the loaded library.</returns>
         public static IntPtr LoadLibrary(string filename)
         {
             IntPtr loadedLibraryHandle = Imports.LoadLibrary(filename);

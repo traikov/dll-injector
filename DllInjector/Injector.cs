@@ -28,7 +28,7 @@ namespace DllInjector
     class Injector
     {
         public delegate void OnDllInjectDelegate(object sender, DllInjectEventArgs e);
-        public static event OnDllInjectDelegate OnDllInjectEvent;
+        public static event OnDllInjectDelegate OnDllInjectEventHandler;
 
         /// <summary>
         /// Inject .DLL into program.
@@ -43,18 +43,17 @@ namespace DllInjector
                 Win32.AccessRights.PROCESS_VM_WRITE | Win32.AccessRights.PROCESS_CREATE_THREAD |
                 Win32.AccessRights.PROCESS_QUERY_INFORMATION,
                 false,
-                process.Id
-                );
+                process.Id);
 
             try
             {
                 InjectDll(processHandle, dllPath);
-                OnDllInjectEvent(null, new DllInjectEventArgs("Dll injected successfully !"));
+                OnDllInjectEventHandler(null, new DllInjectEventArgs("Dll injected successfully !"));
                 return true;
             }
             catch (Exception ex)
             {
-                OnDllInjectEvent(null, new DllInjectEventArgs(ex.Message));
+                OnDllInjectEventHandler(null, new DllInjectEventArgs(ex.Message));
                 return false;
             }
             finally
@@ -85,7 +84,7 @@ namespace DllInjector
                 IntPtr remoteThreadHandle = SThread.CreateRemoteThread(processHandle, (uint)loadLibraryAddress, (uint)parameterAddress);
                 if (remoteThreadHandle != IntPtr.Zero)
                 {
-                    Imports.WaitForSingleObject(remoteThreadHandle, (uint)WaitValues.INFINITE);                
+                    Imports.WaitForSingleObject(remoteThreadHandle, (uint)WaitValues.INFINITE);
                     Imports.CloseHandle(remoteThreadHandle);
                 }
 
