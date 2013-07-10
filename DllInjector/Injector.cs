@@ -46,12 +46,12 @@ namespace DllInjector
             try
             {
                 InjectDll(processHandle, dllPath);
-                OnDllInjectEventHandler(null, new DllInjectEventArgs("Dll injected successfully !"));
+                OnDllInjectEventHandler(null, new DllInjectEventArgs("Dll injected successfully !", false));
                 return true;
             }
             catch (Exception ex)
             {
-                OnDllInjectEventHandler(null, new DllInjectEventArgs(ex.Message));
+                OnDllInjectEventHandler(null, new DllInjectEventArgs(ex.Message, true));
                 return false;
             }
             finally
@@ -101,16 +101,23 @@ namespace DllInjector
 
     public class DllInjectEventArgs : EventArgs
     {
-        string statusMessage = null;
+        string statusMessage;
+        bool failed;
 
-        public DllInjectEventArgs(string statusMessage)
+        public DllInjectEventArgs(string statusMessage, bool failed)
         {
             this.statusMessage = statusMessage;
+            this.failed = failed;
         }
 
         public string StatusMessage
         {
             get { return this.statusMessage; }
+        }
+
+        public bool Failed
+        {
+            get { return this.failed; }
         }
     }
 }

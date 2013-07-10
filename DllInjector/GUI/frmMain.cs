@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 
@@ -36,12 +37,14 @@ namespace DllInjector.GUI
 
         void Injector_OnDllInject(object sender, DllInjectEventArgs e)
         {
-            AddLogMessage(e.StatusMessage);
+            Color messageColor = e.Failed ? Color.Red : Color.Green;
+            AddLogMessage(e.StatusMessage, messageColor);
         }
 
-        void AddLogMessage(string message)
+        void AddLogMessage(string message, Color color)
         {
             message = string.Format("[{0}] {1}{2}", DateTime.Now.ToLongTimeString(), message, Environment.NewLine);
+            rtxtbLog.SelectionColor = color;
             rtxtbLog.AppendText(message);
             rtxtbLog.ScrollToCaret();
         }
@@ -74,12 +77,12 @@ namespace DllInjector.GUI
         {
             if (selectedProcess == null)
             {
-                AddLogMessage("Process not found !");
+                AddLogMessage("Process not found !", Color.Red);
                 return;
             }
             if (String.IsNullOrEmpty(txtbDllPath.Text))
             {
-                AddLogMessage("Dll not selected or invalid dll path.");
+                AddLogMessage("Dll not selected or invalid dll path.", Color.Red);
                 return;
             }
 
