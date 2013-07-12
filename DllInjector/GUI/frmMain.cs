@@ -88,5 +88,10 @@ namespace DllInjector.GUI
 
             Injector.InjectDll(selectedProcess, txtbDllPath.Text);   
         }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
