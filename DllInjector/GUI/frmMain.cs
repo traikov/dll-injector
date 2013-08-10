@@ -26,19 +26,19 @@ namespace DllInjector.GUI
         public frmMain()
         {
             InitializeComponent();
-            Injector.OnDllInjectEventHandler += new Injector.OnDllInjectDelegate(Injector_OnDllInject);
+            Injector.OnDllInjectErrorEventHandler += new Injector.OnDllInjectErrorDelegate(Injector_OnDllInjectErrorEventHandler);
         }
 
         OpenFileDialog fileDialog = new OpenFileDialog()
         {
             Filter = "*.dll|*.dll"
         };
-        Process selectedProcess = null;
+        bool cancelApplicationExitEvent = true;
 
-        void Injector_OnDllInject(object sender, DllInjectEventArgs e)
+        void Injector_OnDllInjectErrorEventHandler(object sender, InjectorExceptionEventArgs e)
         {
-            Color messageColor = e.Failed ? Color.Red : Color.Green;
-            AddLogMessage(e.StatusMessage, messageColor);
+            // TODO: Log exceptions to file.
+            // AddLogMessage(+ e.Message, Color.Red);
         }
 
         void AddLogMessage(string message, Color color)
@@ -60,11 +60,6 @@ namespace DllInjector.GUI
             cboSystemProcesses.Sorted = true;
         }
 
-        private void cboSystemProcesses_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            selectedProcess = Process.GetProcessesByName(cboSystemProcesses.Text)[0];
-        }
-
         private void btnSelectDll_Click(object sender, EventArgs e)
         {
             if (fileDialog.ShowDialog() == DialogResult.OK)
@@ -75,22 +70,43 @@ namespace DllInjector.GUI
 
         private void btnInjectDll_Click(object sender, EventArgs e)
         {
-            if (selectedProcess == null)
+            Process[] processes = Process.GetProcessesByName(cboSystemProcesses.Text);
+            if (processes.Length == 0)
             {
                 AddLogMessage("Process not found !", Color.Red);
                 return;
             }
+
             if (String.IsNullOrEmpty(txtbDllPath.Text))
             {
                 AddLogMessage("Dll not selected or invalid dll path.", Color.Red);
                 return;
             }
+            else if (!System.IO.File.Exists(txtbDllPath.Text))
+            {
+                AddLogMessage("\'DLL to Inject\' not found !", Color.Red);
+                return;
+            }
 
-            Injector.InjectDll(selectedProcess, txtbDllPath.Text);   
+            bool injected = Injector.InjectDll(processes[0], txtbDllPath.Text);
+            if (injected)
+            {
+                AddLogMessage("Injection Successful.", Color.Green);
+            }
+            else
+            {
+                AddLogMessage("Injection Failed.", Color.Red);
+            }
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = cancelApplicationExitEvent;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+            cancelApplicationExitEvent = false;
             Application.Exit();
         }
     }

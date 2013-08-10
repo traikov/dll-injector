@@ -25,8 +25,8 @@ namespace DllInjector
 {
     class Injector
     {
-        public delegate void OnDllInjectDelegate(object sender, DllInjectEventArgs e);
-        public static event OnDllInjectDelegate OnDllInjectEventHandler;
+        public delegate void OnDllInjectErrorDelegate(object sender, InjectorExceptionEventArgs e);
+        public static event OnDllInjectErrorDelegate OnDllInjectErrorEventHandler;
 
         /// <summary>
         /// Inject .DLL into program.
@@ -46,12 +46,11 @@ namespace DllInjector
             try
             {
                 InjectDll(processHandle, dllPath);
-                OnDllInjectEventHandler(null, new DllInjectEventArgs("Dll injected successfully !", false));
                 return true;
             }
             catch (Exception ex)
             {
-                OnDllInjectEventHandler(null, new DllInjectEventArgs(ex.Message, true));
+                OnDllInjectErrorEventHandler(new object(), new InjectorExceptionEventArgs(ex));
                 return false;
             }
             finally
@@ -99,25 +98,24 @@ namespace DllInjector
         }
     }
 
-    public class DllInjectEventArgs : EventArgs
+    public class InjectorExceptionEventArgs : EventArgs
     {
-        string statusMessage;
-        bool failed;
+        Exception exception;
 
-        public DllInjectEventArgs(string statusMessage, bool failed)
+        public InjectorExceptionEventArgs(Exception ex)
         {
-            this.statusMessage = statusMessage;
-            this.failed = failed;
+            exception = ex;
         }
 
-        public string StatusMessage
+        public Exception Exception
         {
-            get { return this.statusMessage; }
+            get { return exception; }
         }
 
-        public bool Failed
+        public string Message
         {
-            get { return this.failed; }
+            get { return exception.Message; }
         }
+
     }
 }

@@ -63,7 +63,6 @@
             this.cboSystemProcesses.Size = new System.Drawing.Size(271, 21);
             this.cboSystemProcesses.TabIndex = 1;
             this.cboSystemProcesses.Text = "Click here to select process..";
-            this.cboSystemProcesses.SelectedIndexChanged += new System.EventHandler(this.cboSystemProcesses_SelectedIndexChanged);
             this.cboSystemProcesses.DropDown += new System.EventHandler(this.cboSystemProcesses_DropDown);
             // 
             // btnSelectDll
@@ -157,6 +156,7 @@
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.Text = "Dll Injector";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
