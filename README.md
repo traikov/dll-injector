@@ -1,13 +1,10 @@
 Dll Injector
 ============
+Copyright (C) 2013 Filip Traikov
 
 Description
 -----------
-This is a simple dll injector for native dlls.
-
-About the Author
-----------------
-Copyright (C) 2013 Filip Traikov
+This is a simple DLL Injector for native Dlls.
 
 Disclaimer
 ----------
