@@ -27,7 +27,7 @@ namespace DllInjector
     {
         public delegate void OnDllInjectErrorDelegate(object sender, InjectorExceptionEventArgs e);
         public static event OnDllInjectErrorDelegate OnDllInjectErrorEventHandler;
-
+        
         /// <summary>
         /// Inject .DLL into program.
         /// </summary>
@@ -45,12 +45,11 @@ namespace DllInjector
 
             try
             {
-                InjectDll(processHandle, dllPath);
-                return true;
+                return InjectDll(processHandle, dllPath);
             }
             catch (Exception ex)
             {
-                OnDllInjectErrorEventHandler(new object(), new InjectorExceptionEventArgs(ex));
+                OnDllInjectErrorEventHandler(0, new InjectorExceptionEventArgs(ex));
                 return false;
             }
             finally
@@ -83,9 +82,11 @@ namespace DllInjector
                 {
                     Imports.WaitForSingleObject(remoteThreadHandle, (uint)WaitValues.INFINITE);
                     Imports.CloseHandle(remoteThreadHandle);
+
+                    return true;
                 }
 
-                return true;
+                return false;
             }
             finally
             {

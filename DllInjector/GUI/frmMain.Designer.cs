@@ -56,13 +56,13 @@
             // 
             // cboSystemProcesses
             // 
+            this.cboSystemProcesses.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSystemProcesses.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cboSystemProcesses.FormattingEnabled = true;
             this.cboSystemProcesses.Location = new System.Drawing.Point(6, 19);
             this.cboSystemProcesses.Name = "cboSystemProcesses";
             this.cboSystemProcesses.Size = new System.Drawing.Size(271, 21);
             this.cboSystemProcesses.TabIndex = 1;
-            this.cboSystemProcesses.Text = "Click here to select process..";
             this.cboSystemProcesses.DropDown += new System.EventHandler(this.cboSystemProcesses_DropDown);
             // 
             // btnSelectDll

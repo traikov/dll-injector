@@ -91,11 +91,11 @@ namespace DllInjector.GUI
             bool injected = Injector.InjectDll(processes[0], txtbDllPath.Text);
             if (injected)
             {
-                AddLogMessage("Injection Successful.", Color.Green);
+                AddLogMessage("Injection successful.", Color.Green);
             }
             else
             {
-                AddLogMessage("Injection Failed.", Color.Red);
+                AddLogMessage("Injection failed.", Color.Red);
             }
         }
 
