@@ -37,15 +37,22 @@ namespace DllInjector.GUI
 
         void Injector_OnDllInjectErrorEventHandler(object sender, InjectorExceptionEventArgs e)
         {
-            // TODO: Log exceptions to file.
-            // AddLogMessage(+ e.Message, Color.Red);
+            if (e.Type == InjectorExceptionType.Notification)
+            {
+                AddLogMessage(e.Message, Color.Orange);
+            }
+            else
+            {
+                // TODO: Log fatal exceptions to file.
+            } 
         }
 
         void AddLogMessage(string message, Color color)
         {
-            message = string.Format("[{0}] {1}{2}", DateTime.Now.ToLongTimeString(), message, Environment.NewLine);
+            string timestamp = string.Format("[{0}] ", DateTime.Now.ToLongTimeString());
+            rtxtbLog.AppendText(timestamp);
             rtxtbLog.SelectionColor = color;
-            rtxtbLog.AppendText(message);
+            rtxtbLog.AppendText(message + Environment.NewLine);
             rtxtbLog.ScrollToCaret();
         }
 
@@ -68,14 +75,22 @@ namespace DllInjector.GUI
             }
         }
 
-        private void btnInjectDll_Click(object sender, EventArgs e)
+        private Process GetSelectedProcess()
         {
             Process[] processes = Process.GetProcessesByName(cboSystemProcesses.Text);
             if (processes.Length == 0)
             {
-                AddLogMessage("Process not found !", Color.Red);
-                return;
+                AddLogMessage("Process not found.", Color.Red);
+                return null;
             }
+            return processes[0];
+        }
+
+        private void btnInjectDll_Click(object sender, EventArgs e)
+        {
+            Process selectedProcess = GetSelectedProcess();
+            if (selectedProcess == null)
+                return;
 
             if (String.IsNullOrEmpty(txtbDllPath.Text))
             {
@@ -88,7 +103,7 @@ namespace DllInjector.GUI
                 return;
             }
 
-            bool injected = Injector.InjectDll(processes[0], txtbDllPath.Text);
+            bool injected = Injector.InjectDll(selectedProcess, txtbDllPath.Text);
             if (injected)
             {
                 AddLogMessage("Injection successful.", Color.Green);
@@ -96,6 +111,23 @@ namespace DllInjector.GUI
             else
             {
                 AddLogMessage("Injection failed.", Color.Red);
+            }
+        }
+
+        private void btnShowProcessLoadedModules_Click(object sender, EventArgs e)
+        {
+            Process selectedProcess = GetSelectedProcess();
+            if (selectedProcess == null)
+                return;
+
+            try
+            {
+                frmLoadedModulesView loadedModules = new frmLoadedModulesView(selectedProcess);
+                loadedModules.Show();
+            }
+            catch
+            {
+                AddLogMessage(string.Format("Access to '{0}' is denied.", selectedProcess.ProcessName), Color.Red);
             }
         }
 

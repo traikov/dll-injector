@@ -77,6 +77,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI\frmLoadedModulesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\frmLoadedModulesView.Designer.cs">
+      <DependentUpon>frmLoadedModulesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +96,9 @@
     <Compile Include="Utils\SMemory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI\frmLoadedModulesView.resx">
+      <DependentUpon>frmLoadedModulesView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

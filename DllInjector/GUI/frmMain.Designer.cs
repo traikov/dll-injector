@@ -38,6 +38,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnExit = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnViewProcessLoadedModules = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -46,9 +47,9 @@
             // btnInjectDll
             // 
             this.btnInjectDll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnInjectDll.Location = new System.Drawing.Point(216, 141);
+            this.btnInjectDll.Location = new System.Drawing.Point(223, 141);
             this.btnInjectDll.Name = "btnInjectDll";
-            this.btnInjectDll.Size = new System.Drawing.Size(84, 24);
+            this.btnInjectDll.Size = new System.Drawing.Size(77, 24);
             this.btnInjectDll.TabIndex = 0;
             this.btnInjectDll.Text = "Inject";
             this.btnInjectDll.UseVisualStyleBackColor = true;
@@ -123,7 +124,7 @@
             this.btnExit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnExit.Location = new System.Drawing.Point(12, 141);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(84, 24);
+            this.btnExit.Size = new System.Drawing.Size(64, 24);
             this.btnExit.TabIndex = 7;
             this.btnExit.Text = "Exit";
             this.btnExit.UseVisualStyleBackColor = true;
@@ -140,11 +141,22 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Log";
             // 
+            // btnViewProcessLoadedModules
+            // 
+            this.btnViewProcessLoadedModules.Location = new System.Drawing.Point(97, 142);
+            this.btnViewProcessLoadedModules.Name = "btnViewProcessLoadedModules";
+            this.btnViewProcessLoadedModules.Size = new System.Drawing.Size(120, 23);
+            this.btnViewProcessLoadedModules.TabIndex = 9;
+            this.btnViewProcessLoadedModules.Text = "View loaded modules";
+            this.btnViewProcessLoadedModules.UseVisualStyleBackColor = true;
+            this.btnViewProcessLoadedModules.Click += new System.EventHandler(this.btnShowProcessLoadedModules_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(313, 288);
+            this.Controls.Add(this.btnViewProcessLoadedModules);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.groupBox2);
@@ -176,5 +188,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnViewProcessLoadedModules;
     }
 }

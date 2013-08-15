@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics;
 using DllInjector.Win32;
 
 namespace DllInjector.Utils
@@ -38,6 +39,24 @@ namespace DllInjector.Utils
                 throw new Exception("GetProcAddress failed.");
             }
             return procAddress;
+        }
+
+        /// <summary>
+        /// Check if process contains Dll(module).
+        /// </summary>
+        /// <param name="process">Process to check.</param>
+        /// <param name="dllPath">Path to the dll to check for.</param>
+        /// <returns>Returns true if process contains the given module.</returns>
+        public static bool ContainsDll(Process process, string dllPath)
+        {
+            foreach (ProcessModule module in process.Modules)
+            {
+                if (module.FileName == dllPath)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

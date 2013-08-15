@@ -27,7 +27,7 @@ namespace DllInjector
     {
         public delegate void OnDllInjectErrorDelegate(object sender, InjectorExceptionEventArgs e);
         public static event OnDllInjectErrorDelegate OnDllInjectErrorEventHandler;
-        
+
         /// <summary>
         /// Inject .DLL into program.
         /// </summary>
@@ -36,6 +36,12 @@ namespace DllInjector
         /// <returns>Returns true if function succeed.</returns>
         public static bool InjectDll(Process process, string dllPath)
         {
+            if (SProcess.ContainsDll(process, dllPath))
+            {
+                OnDllInjectErrorEventHandler(0, new InjectorExceptionEventArgs("Dll already injected.", InjectorExceptionType.Notification));
+                return false;
+            }
+
             IntPtr processHandle = Win32.Imports.OpenProcess(
                 Win32.AccessRights.PROCESS_VM_OPERATION | Win32.AccessRights.PROCESS_VM_READ |
                 Win32.AccessRights.PROCESS_VM_WRITE | Win32.AccessRights.PROCESS_CREATE_THREAD |
@@ -43,13 +49,16 @@ namespace DllInjector
                 false,
                 process.Id);
 
+            if (processHandle == IntPtr.Zero)
+                return false;
+
             try
             {
                 return InjectDll(processHandle, dllPath);
             }
             catch (Exception ex)
             {
-                OnDllInjectErrorEventHandler(0, new InjectorExceptionEventArgs(ex));
+                OnDllInjectErrorEventHandler(0, new InjectorExceptionEventArgs(ex, InjectorExceptionType.Fatal));
                 return false;
             }
             finally
@@ -99,13 +108,31 @@ namespace DllInjector
         }
     }
 
+    public enum InjectorExceptionType
+    {
+        Notification,
+        Fatal
+    }
+
     public class InjectorExceptionEventArgs : EventArgs
     {
         Exception exception;
+        InjectorExceptionType exceptionType;
 
-        public InjectorExceptionEventArgs(Exception ex)
+        public InjectorExceptionEventArgs(string message, InjectorExceptionType type)
+            : this(message, null, type)
         {
-            exception = ex;
+        }
+
+        public InjectorExceptionEventArgs(Exception ex, InjectorExceptionType type)
+            : this(ex.Message, ex, type)
+        {
+        }
+
+        public InjectorExceptionEventArgs(string message, Exception innerException, InjectorExceptionType type)
+        {
+            exception = new Exception(message, innerException);
+            exceptionType = type;
         }
 
         public Exception Exception
@@ -116,6 +143,11 @@ namespace DllInjector
         public string Message
         {
             get { return exception.Message; }
+        }
+
+        public InjectorExceptionType Type
+        {
+            get { return exceptionType; }
         }
 
     }
