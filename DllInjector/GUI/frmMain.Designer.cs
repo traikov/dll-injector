@@ -39,6 +39,7 @@
             this.btnExit = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnViewProcessLoadedModules = new System.Windows.Forms.Button();
+            this.lblDllToInject = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -109,6 +110,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lblDllToInject);
             this.groupBox2.Controls.Add(this.txtbDllPath);
             this.groupBox2.Controls.Add(this.btnSelectDll);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -151,6 +153,14 @@
             this.btnViewProcessLoadedModules.UseVisualStyleBackColor = true;
             this.btnViewProcessLoadedModules.Click += new System.EventHandler(this.btnShowProcessLoadedModules_Click);
             // 
+            // lblDllToInject
+            // 
+            this.lblDllToInject.AutoSize = true;
+            this.lblDllToInject.Location = new System.Drawing.Point(6, 42);
+            this.lblDllToInject.Name = "lblDllToInject";
+            this.lblDllToInject.Size = new System.Drawing.Size(0, 13);
+            this.lblDllToInject.TabIndex = 4;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,5 +199,6 @@
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnViewProcessLoadedModules;
+        private System.Windows.Forms.Label lblDllToInject;
     }
 }

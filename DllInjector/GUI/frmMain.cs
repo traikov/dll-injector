@@ -72,6 +72,7 @@ namespace DllInjector.GUI
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 txtbDllPath.Text = fileDialog.FileName;
+                lblDllToInject.Text = fileDialog.SafeFileName;
             }
         }
 
