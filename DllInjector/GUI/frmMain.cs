@@ -84,13 +84,23 @@ namespace DllInjector.GUI
 
         private Process GetSelectedProcess()
         {
+
             Process selectedProcess = null;
             bool processFound = processList.TryGetValue(cboSystemProcesses.Text, out selectedProcess);
-            if(processFound)
+            if (processFound)
             {
-                if (selectedProcess.HasExited)
+                // some processes throw Win32Exception when performing check on them
+                try
                 {
-                    AddLogMessage("Process not found.", Color.Red);
+                    if (selectedProcess.HasExited)
+                    {
+                        AddLogMessage("Process not found.", Color.Red);
+                        return null;
+                    }
+                }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    AddLogMessage("Access to process denied.", Color.Red);
                     return null;
                 }
             }
