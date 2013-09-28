@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -28,6 +29,8 @@ namespace DllInjector.GUI
             InitializeComponent();
             Injector.OnDllInjectErrorEventHandler += new Injector.OnDllInjectErrorDelegate(Injector_OnDllInjectErrorEventHandler);
         }
+
+        Dictionary<string, Process> processList = new Dictionary<string, Process>();
 
         OpenFileDialog fileDialog = new OpenFileDialog()
         {
@@ -59,10 +62,13 @@ namespace DllInjector.GUI
         private void cboSystemProcesses_DropDown(object sender, EventArgs e)
         {
             cboSystemProcesses.Items.Clear();
-            Process[] processList = Process.GetProcesses();
-            foreach (var p in processList)
+            processList.Clear();
+            Process[] processes = Process.GetProcesses();
+            foreach (var p in processes)
             {
-                cboSystemProcesses.Items.Add(p.ProcessName);
+                string explicitProcessName = string.Format("{0} -- {1}", p.ProcessName, p.Id);
+                processList.Add(explicitProcessName, p);
+                cboSystemProcesses.Items.Add(explicitProcessName);
             }
             cboSystemProcesses.Sorted = true;
         }
@@ -78,13 +84,17 @@ namespace DllInjector.GUI
 
         private Process GetSelectedProcess()
         {
-            Process[] processes = Process.GetProcessesByName(cboSystemProcesses.Text);
-            if (processes.Length == 0)
+            Process selectedProcess = null;
+            bool processFound = processList.TryGetValue(cboSystemProcesses.Text, out selectedProcess);
+            if(processFound)
             {
-                AddLogMessage("Process not found.", Color.Red);
-                return null;
+                if (selectedProcess.HasExited)
+                {
+                    AddLogMessage("Process not found.", Color.Red);
+                    return null;
+                }
             }
-            return processes[0];
+            return selectedProcess;
         }
 
         private void btnInjectDll_Click(object sender, EventArgs e)
@@ -128,7 +138,8 @@ namespace DllInjector.GUI
             }
             catch
             {
-                AddLogMessage(string.Format("Access to '{0}' is denied.", selectedProcess.ProcessName), Color.Red);
+                string message = string.Format("Access to '{0}' is denied.", selectedProcess.ProcessName);
+                AddLogMessage(message, Color.Red);
             }
         }
 
