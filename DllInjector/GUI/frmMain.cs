@@ -28,6 +28,7 @@ namespace DllInjector.GUI
         {
             InitializeComponent();
             Injector.OnDllInjectErrorEventHandler += new Injector.OnDllInjectErrorDelegate(Injector_OnDllInjectErrorEventHandler);
+            // Process.EnterDebugMode();
         }
 
         Dictionary<string, Process> processList = new Dictionary<string, Process>();
@@ -156,6 +157,7 @@ namespace DllInjector.GUI
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = cancelApplicationExitEvent;
+            // Process.LeaveDebugMode();
         }
 
         private void btnExit_Click(object sender, EventArgs e)

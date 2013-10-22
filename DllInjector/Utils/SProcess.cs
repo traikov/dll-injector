@@ -49,6 +49,10 @@ namespace DllInjector.Utils
         /// <returns>Returns true if process contains the given module.</returns>
         public static bool ContainsDll(Process process, string dllPath)
         {
+            if (process == null)
+                throw new NullReferenceException("process cannot be null.");
+
+            process.Refresh();
             foreach (ProcessModule module in process.Modules)
             {
                 if (module.FileName == dllPath)
