@@ -41,7 +41,7 @@ namespace DllInjector
                 OnDllInjectErrorEventHandler(0, new InjectorExceptionEventArgs("Dll already injected.", InjectorExceptionType.Notification));
                 return false;
             }
-
+            
             IntPtr processHandle = Win32.Imports.OpenProcess(
                 Win32.AccessRights.PROCESS_VM_OPERATION | Win32.AccessRights.PROCESS_VM_READ |
                 Win32.AccessRights.PROCESS_VM_WRITE | Win32.AccessRights.PROCESS_CREATE_THREAD |
@@ -70,11 +70,9 @@ namespace DllInjector
 
         private static bool InjectDll(IntPtr processHandle, string dllPath)
         {
-            IntPtr dllHandle = IntPtr.Zero;
             IntPtr parameterAddress = IntPtr.Zero;
             try
             {
-                dllHandle = SLibrary.LoadLibrary("kernel32");
                 parameterAddress = SMemory.AllocateMemory(processHandle, dllPath.Length,
                     Win32.MemoryAllocationType.MEM_COMMIT, Win32.MemoryProtectionType.PAGE_READWRITE);
 
@@ -85,7 +83,8 @@ namespace DllInjector
                     throw new Exception("WriteProcessMemory failed.");
                 }
 
-                IntPtr loadLibraryAddress = SProcess.GetProcAddress(dllHandle, "LoadLibraryA");
+                IntPtr kernel32dllHandle = Imports.GetModuleHandle("kernel32.dll");
+                IntPtr loadLibraryAddress = SProcess.GetProcAddress(kernel32dllHandle, "LoadLibraryA");
                 IntPtr remoteThreadHandle = SThread.CreateRemoteThread(processHandle, (uint)loadLibraryAddress, (uint)parameterAddress);
                 if (remoteThreadHandle != IntPtr.Zero)
                 {
@@ -99,9 +98,6 @@ namespace DllInjector
             }
             finally
             {
-                if (dllHandle != IntPtr.Zero)
-                    Imports.FreeLibrary(dllHandle);
-
                 if (parameterAddress != IntPtr.Zero)
                     SMemory.FreeMemory(processHandle, (uint)parameterAddress);
             }
