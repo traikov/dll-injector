@@ -15,6 +15,7 @@ namespace DllInjector.GUI
         public frmLoadedModulesView()
         {
             InitializeComponent();
+            this.gridViewLoadedModules.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         public frmLoadedModulesView(Process process)
